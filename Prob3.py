@@ -1,63 +1,64 @@
-########################################
+######################################################################
 # Name: Suzanne Gunderson
-# Collaborators: N/A
-# Estimate time spent (hrs): 3
-########################################
+# Collaborators (if any):
+# Section leader's name: Gavin
+# List of extensions made (if any):
+######################################################################
 
-from pgl import GWindow, GRect, GLabel, GLine
+"""
+This program (once you have finished it) implements the Breakout game
+"""
+
+from pgl import GWindow, GOval, GRect
 import random
 
-GW_WIDTH = 500                      # Width of window
-GW_HEIGHT = 500                     # Height of window
-SQUARE_SIZE = 50                    # Width and height of square
-SCORE_DX = 10                       # Distance from left of window to origin
-SCORE_DY = 10                       # Distance up from bottom of window to baseline
-SCORE_FONT = "bold 40pt 'serif'"    # Font for score
+# Constants
+GWINDOW_WIDTH = 360                     # Width of the graphics window
+GWINDOW_HEIGHT = 600                    # Height of the graphics window
+N_ROWS = 10                             # Number of brick rows
+N_COLS = 10                             # Number of brick columns
+BRICK_ASPECT_RATIO = 4 / 1              # Width to height ratio of a brick
+BRICK_TO_BALL_RATIO = 3 / 1             # Ratio of brick width to ball size
+BRICK_TO_PADDLE_RATIO = 2 / 3           # Ratio of brick to paddle width
+BRICK_SEP = 2                           # Separation between bricks (in pixels)
+TOP_FRACTION = 0.1                      # Fraction of window above bricks
+BOTTOM_FRACTION = 0.05                  # Fraction of window below paddle
+N_BALLS = 3                             # Number of balls (lives) in a game
+TIME_STEP = 10                          # Time step in milliseconds
+INITIAL_Y_VELOCITY = 3.0                # Starting y velocity downwards
+MIN_X_VELOCITY = 1.0                    # Minimum random x velocity
+MAX_X_VELOCITY = 3.0                    # Maximum random x velocity
 
-def clicky_box():
-    # Defining the callback function, which you won't need until Part C
-    def on_mouse_down(event):
-        if event.get_x() >= sq.get_x() and event.get_x() <= (sq.get_x() + SQUARE_SIZE):
-            if event.get_y() >= sq.get_y() and event.get_y() <= (sq.get_y() + SQUARE_SIZE):
-                new_x_coordinate = random.randint(0,GW_WIDTH)
-                new_y_coordinate = random.randint(0,GW_HEIGHT)
-                sq.set_location(new_x_coordinate,new_y_coordinate)
-                x_coordinate = new_x_coordinate
-                y_coordinate = new_y_coordinate
-                gw.remove(score)
-                gw.score += 1
-                score.set_label(f"{gw.score}")
-                gw.add(score)
-        else:
-            gw.remove(score)
-            gw.score = 0
-            score.set_label(f"{gw.score}")
-            gw.add(score)
+# Derived Constants
+BRICK_WIDTH = (GWINDOW_WIDTH - (N_COLS + 1) * BRICK_SEP) / N_COLS
+BRICK_HEIGHT = BRICK_WIDTH / BRICK_ASPECT_RATIO
+PADDLE_WIDTH = BRICK_WIDTH / BRICK_TO_PADDLE_RATIO
+PADDLE_HEIGHT = BRICK_HEIGHT / BRICK_TO_PADDLE_RATIO
+PADDLE_Y = (1 - BOTTOM_FRACTION) * GWINDOW_HEIGHT - PADDLE_HEIGHT
+BALL_DIAMETER = BRICK_WIDTH / BRICK_TO_BALL_RATIO
 
 
-    # Down here you should initialize the window and draw the initial square
-    # Make sure you tab it in so that it is part of the clicky_box function
-    
-    gw = GWindow(GW_WIDTH, GW_HEIGHT)
-    
-    # Draw Initial Square:
-    X = (GW_HEIGHT-SQUARE_SIZE)//2
-    Y = (GW_HEIGHT-SQUARE_SIZE)//2
-    sq = GRect(X,Y,SQUARE_SIZE,SQUARE_SIZE)
-    sq.set_color("purple")
-    sq.set_filled(True)
-    gw.add(sq)
-    x_coordinate = sq.get_x()
-    y_coordinate = sq.get_y()
-    print(x_coordinate, y_coordinate)
-    gw.score = 0
-    score = GLabel(f"{gw.score}",SCORE_DX,SCORE_DY)
-    gw.add(score)
-    #gw.add(GLabel(Score,SCORE_DX,SCORE_DY))
-    gw.add_event_listener("click", on_mouse_down)
+# Function: breakout
+def breakout():
+    """The main program for the Breakout game."""
+
+    gw = GWindow(GWINDOW_WIDTH, GWINDOW_HEIGHT)
+
+    # You fill in the rest of this function along with any additional
+    # helper and callback functions you need
+    for i in range(N_COLS):
+        X = BRICK_SEP
+        Y = (TOP_FRACTION * GWINDOW_HEIGHT) + (i * BRICK_HEIGHT) + ((i + 1) * BRICK_SEP)
+        for i in range(N_COLS):
+            b = GRect(X,Y,BRICK_WIDTH,BRICK_HEIGHT)
+            b.set_color("purple")
+            b.set_filled(True) 
+            gw.add(b)
+            X += BRICK_SEP + BRICK_WIDTH
 
 
 
 
-if __name__ == '__main__':
-    clicky_box()
+# Startup code
+if __name__ == "__main__":
+    breakout()
